@@ -1,0 +1,32 @@
+1. What are all the types of pokemon that a pokemon can have?
+    Select * from types;
+
+2. What is the name of the pokemon with id 45?
+   Select * from pokemons where id= 45;
+
+3. How many pokemon are there?
+    Select count(id) from pokemons;
+
+4. How many types are there?
+    Select count(id) from types;
+
+5. How many pokemon have a secondary type?
+    Select count(*) from pokemons where secondary_type >0;
+
+6. What is each pokemon's primary type?
+    Select p.name, t.name As primaryType from pokemons p Join types t ON p.id = t.id;
+
+7. What is Rufflet's secondary type?
+    Select name, secondary_type from pokemons where name = 'Rufflet';
+
+8. What are the names of the pokemon that belong to the trainer with trainerID 303?
+    select t.trainerId, t.trainername, p.name AS pokemonName from trainers t
+            Join pokemon_trainer pt on t.trainerId = pt.trainerId
+            Join pokemons p ON pt.pokemon_id = p.id;
+
+9. How many pokemon have a secondary type Poison
+    select * from pokemons Join types on types.id = where secondary_type ='Poison';
+
+10.What are all the primary types and how many pokemon have that type?
+11.How many pokemon at level 100 does each trainer with at least one level 100 pokemone have? (Hint: your query should not display a trainer
+12.How many pokemon only belong to one trainer and no other?
