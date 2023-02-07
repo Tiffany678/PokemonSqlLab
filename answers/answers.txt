@@ -16,16 +16,27 @@
 Part 3: Joins and Groups
 
 6. What is each pokemon's primary type?
-    Select p.id, p.name, p.primary_type, t.name from pokemons as p, types as t where t.id = p.primary_type ;
+    Select p.name, t.name from pokemons As p
+        left join types AS t
+            on t.id = p.primary_type;
+
 
 7. What is Rufflet's secondary type?
-    select p.name, t.id, t.name from pokemons as p, types as t  where p.name ='Rufflet' && p.secondary_type = t.id;
+    select p.name, t.name from pokemons as p
+        left join types as t
+         on p.secondary_type = t.id
+            having p.name ='Rufflet';
+            +---------+--------+
+            | name    | name   |
+            +---------+--------+
+            | Rufflet | Flying |
+            +---------+--------+
 
 8. What are the names of the pokemon that belong to the trainer with trainerID 303?
     select t.trainerId, t.trainername, p.name AS pokemonName from trainers t
             Join pokemon_trainer pt on t.trainerId = pt.trainerId
             Join pokemons p ON pt.pokemon_id = p.id
-            where t.trainerID =303;
+                WHERE t.trainerID =303;
             +-----------+----------------------+-------------+
             | trainerId | trainername          | pokemonName |
             +-----------+----------------------+-------------+
@@ -35,7 +46,8 @@ Part 3: Joins and Groups
 
 9. How many pokemon have a secondary type Poison
     select count(p.name) from pokemons p
-        JOIN types t on p.secondary_type = t.id where t.name = 'Poison';
+        JOIN types t ON p.secondary_type = t.id
+            WHERE t.name = 'Poison';
     +---------------+
     | count(p.name) |
     +---------------+
@@ -45,7 +57,7 @@ Part 3: Joins and Groups
 10.What are all the primary types and how many pokemon have that type?
     Select t.name AS primary_types, count(p.id) as number_of_pokemons from types t
         JOIN pokemons p on p.primary_type = t.id
-        group by t.name;
+            group by t.name;
         +---------------+--------------------+
         | primary_types | number_of_pokemons |
         +---------------+--------------------+
@@ -69,10 +81,39 @@ Part 3: Joins and Groups
         | Flying        |                  1 |
         +---------------+--------------------+
 
-11.How many pokemon at level 100 does each trainer with at least one level 100 pokemone have? (Hint: your query should not display a trainer
+11.How many pokemon at level 100 does each trainer with at least one level 100 pokemone have?
+    (Hint: your query should not display a trainer)
+    SELECT TRAINERID, COUNT(POKELEVEL)
+        FROM  pokemon_trainer
+          WHERE POKELEVEL=100
+          GROUP BY TRAINERID;
 
 
 12.How many pokemon only belong to one trainer and no other?
+    select p.name, count(pt.pokemon_id)
+            from pokemon_trainer pt
+                Join pokemons AS p
+                    ON p.id = pt.pokemon_id
+                group by p.name
+                  having count(pt.pokemon_id)=1;
++------------+----------------------+
+| name       | count(pt.pokemon_id) |
++------------+----------------------+
+| Clawitzer  |                    1 |
+| Barbaracle |                    1 |
+| Tynamo     |                    1 |
+| Rufflet    |                    1 |
+| Lugia      |                    1 |
+| Binacle    |                    1 |
+| Malamar    |                    1 |
+| Zekrom     |                    1 |
+| Reshiram   |                    1 |
+| Happiny    |                    1 |
+| Zweilous   |                    1 |
+| Swirlix    |                    1 |
+| Spewpa     |                    1 |
++------------+----------------------+
+
 
 
 ================================================================================================
@@ -83,12 +124,13 @@ Pokemon Name	Trainer Name	Level	Primary Type	Secondary Type
 Pokemon's name	Trainer's name	Current Level	Primary Type Name	Secondary Type Name
 Sort the data by finding out which trainer has the strongest pokemon so that this will act as a ranking of strongest to weakest trainer. You may interpret strongest in whatever way you want, but you will have to explain your decision.
 
+SELECT P.NAME 'Pokemon Name',TR.TRAINERNAME 'Trainer Name',PR.POKELEVEL 'Level',T1.NAME 'Primary Type',T2.NAME 'Secondary Type'
+    FROM POKEMON_TRAINER PR
+        JOIN POKEMONS P ON PR.POKEMON_ID=P.ID
+        JOIN TRAINERS TR ON TR.TRAINERID=PR.TRAINERID
+        JOIN TYPES T1 ON T1.ID=P.PRIMARY_TYPE
+        JOIN TYPES T2 ON T2.ID=P.SECONDARY_TYPE
+        ORDER BY PR.ATTACK DESC,PR.DEFENSE DESC,PR.MAXHP DESC;
 
 
-What is Rufflet's secondary type?
-What are the names of the pokemon that belong to the trainer with trainerID 303?
-How many pokemon have a secondary type Poison
-What are all the primary types and how many pokemon have that type?
-How many pokemon at level 100 does each trainer with at least one level 100 pokemone have? (Hint: your query should not display a trainer
-How many pokemon only belong to one trainer and no other?
 
